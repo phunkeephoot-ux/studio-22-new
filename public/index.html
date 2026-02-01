@@ -1387,8 +1387,14 @@
                 return;
             }
 
-            const dateObj = new Date(dateValue);
-            const dayOfWeek = dateObj.getUTCDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+            // MANUAL PARSE to ensure Local Time (prevents UTC shifts)
+            const parts = dateValue.split('-');
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // Months are 0-indexed
+            const day = parseInt(parts[2], 10);
+
+            const dateObj = new Date(year, month, day);
+            const dayOfWeek = dateObj.getDay(); // Local day of week
 
             if (dayOfWeek === 0) {
                 slotsContainer.innerHTML = '<div class="no-slots-msg">Studio is closed on Sundays.</div>';
