@@ -1388,7 +1388,7 @@
             }
 
             const dateObj = new Date(dateValue);
-            const dayOfWeek = dateObj.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+            const dayOfWeek = dateObj.getUTCDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
 
             if (dayOfWeek === 0) {
                 slotsContainer.innerHTML = '<div class="no-slots-msg">Studio is closed on Sundays.</div>';
