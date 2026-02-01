@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Basic Route
-app.get('/', (req, res) => {
+app.get('/api/health', (req, res) => {
     res.json({ message: 'Welcome to Phaste API', status: 'running' });
 });
 

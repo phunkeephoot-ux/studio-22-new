@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: studio22-app
+    name: phaste-app
     env: node
     plan: free
     buildCommand: npm install && npx prisma generate && npx prisma db push
