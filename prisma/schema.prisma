@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String        @id @default(uuid())
+  email           String        @unique
+  passwordHash    String
+  name            String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  // Stats & Settings
+  weight          Float?        // Current weight in kg
+  goalWeight      Float?        // Goal weight in kg
+  height          Float?        // Height in cm
+  activityLevel   String?       // sedentary, active, etc.
+  dietaryPref     String?       // standard, vegan, etc.
+  
+  // Protocol
+  currentProtocol String        @default("16:8") // 16:8, 18:6, 20:4, circadian
+  
+  // Relations
+  fastSessions    FastSession[]
+  progressLogs    UserProgress[]
+}
+
+model FastSession {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  
+  startTime       DateTime
+  endTime         DateTime? // Null if currently active
+  plannedEndTime  DateTime
+  
+  status          String    @default("active") // active, completed, cancelled
+  mood            String?   // User mood at end of fast
+  notes           String?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Meal {
+  id              String    @id @default(uuid())
+  name            String
+  description     String?
+  calories        Int
+  protein         Float?
+  carbs           Float?
+  fats            Float?
+  image           String?   // URL to image
+  
+  type            String    // break_fast, standard, snack
+  tags            String?   // stored as JSON string or comma separated: 'vegan,keto'
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model UserProgress {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  
+  date            DateTime  @default(now())
+  weight          Float?
+  ketones         Float?    // Optional blood ketone level
+  
+  createdAt       DateTime  @default(now())
+}
+
+model Booking {
+  id              String    @id @default(uuid())
+  clientName      String
+  clientEmail     String
+  clientPhone     String?
+  service         String    // '1hr' or '2hr'
+  date            DateTime
+  startTime       String    // e.g., "19:00"
+  status          String    @default("pending") // pending, confirmed
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
